@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MyFirst_Thread1.iml" filepath="$PROJECT_DIR$/MyFirst_Thread1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Primer_Contacto_Con_Hilos.iml" filepath="$PROJECT_DIR$/Primer_Contacto_Con_Hilos.iml" />
     </modules>
   </component>
 </project>
