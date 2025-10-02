@@ -6,11 +6,10 @@ public class HiloInPar extends Thread{
 
     @Override
     public void run() {
-        // mostrar los numeros pares del 1 al 20
-        for (int i = 1; i < 20; i +=2) {
-            System.out.println(getName() + i);
-            i++;
-            //System.out.println(Thread.currentThread().getName() + "Soy el proceso " + (i+1));
+        // mostrar los numeros impares del 1 al 19
+        for (int i = 1; i <= 19; i += 2) {
+            //System.out.println(getName() + i);
+            //System.out.println(Thread.currentThread().getName() + "Soy el proceso " + (i));
         }
 
     }
