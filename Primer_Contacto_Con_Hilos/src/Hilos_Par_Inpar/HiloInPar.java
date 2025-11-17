@@ -1,3 +1,4 @@
+package Hilos_Par_Inpar;
 public class HiloInPar extends Thread{
     // El constructor pide el nombre
     public HiloInPar(String name) {
@@ -9,7 +10,7 @@ public class HiloInPar extends Thread{
         // mostrar los numeros impares del 1 al 19
         for (int i = 1; i <= 19; i += 2) {
             //System.out.println(getName() + i);
-            //System.out.println(Thread.currentThread().getName() + "Soy el proceso " + (i));
+            System.out.println(Thread.currentThread().getName() + "Soy el proceso " + (i));
         }
 
     }

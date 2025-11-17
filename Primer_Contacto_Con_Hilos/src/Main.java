@@ -1,3 +1,6 @@
+import Hilos_Par_Inpar.HiloInPar;
+import Hilos_Par_Inpar.HiloPar;
+
 public class Main {
     public static void main(String[] args) throws InterruptedException {
 
@@ -22,20 +25,9 @@ public class Main {
          */
 
 
-        HiloPar h1 = new HiloPar("PAR ");
-        HiloInPar h2 = new HiloInPar("INPAR ");
 
-        System.out.println("h1 vivo antes de start? " + h1.isAlive()); 
-        System.out.println("h2 vivo antes de start? " + h2.isAlive()); 
-
-        h1.start();
-        h2.start();
-
-        System.out.println("h1 vivo despues de start? " + h1.isAlive()); 
-        System.out.println("h2 vivo despues de start? " + h2.isAlive()); 
+        
         
 
-
-
-    }
+    }    
 }
