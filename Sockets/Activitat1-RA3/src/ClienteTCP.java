@@ -1,6 +1,6 @@
 import java.io.*;    // Clases para entrada/salida: BufferedReader, InputStreamReader, PrintWriter, etc.
 import java.net.*;   // Clases de red: Socket, InetAddress, etc.
-import java.util.Scanner;   // 🎹 Scanner para leer lo que escribe el usuario por teclado
+import java.util.Scanner;
 
 public class ClienteTCP {
     public static void main(String[] args) throws IOException {

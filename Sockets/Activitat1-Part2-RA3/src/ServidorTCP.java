@@ -1,55 +1,68 @@
-import java.io.*;    // Clases de entrada/salida: BufferedReader, InputStreamReader, PrintWriter...
-import java.net.*;   // Clases de red: ServerSocket, Socket...
+import java.io.*;
+import java.net.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class ServidorTCP {
+
     public static void main(String[] args) throws IOException {
-
-        // Puerto donde el servidor va a "escuchar".
-        // Debe coincidir con el puerto al que se conecta el cliente.
         int puerto = 5000;
-
-        // Creamos un ServerSocket: abre el puerto y se queda LISTENING (escuchando).
-        // Si el puerto está ocupado, aquí saltará error (Address already in use).
         ServerSocket server = new ServerSocket(puerto);
-
-        // Mensaje informativo para ver que el servidor está listo.
         System.out.println("Servidor escuchando en puerto " + puerto);
 
-        // accept() BLOQUEA: el programa se queda esperando hasta que un cliente se conecte.
-        // Cuando alguien se conecta, devuelve un Socket "cliente" para hablar con ese cliente.
-        Socket cliente = server.accept(); // espera a que se conecte un cliente
+        // Bucle infinito
+        while (true) {
+            // Esperar al siguiente cliente
+            Socket cliente = server.accept();
+            // Cada cliente tiene su propio hilo
+            Thread hilo = new Thread(new ManejadorCliente(cliente));
+            hilo.start();
+        }
+        //server.close() lo quito para que no se apague el servidor
+    }
+}
 
-        // Mostramos la IP del cliente que se conectó.
-        System.out.println("Cliente conectado: " + cliente.getInetAddress());
+// ManejadorCLiente se crea una instancia por cliente
+class ManejadorCliente implements Runnable {
 
-        // Stream de entrada: lo que el cliente envía hacia el servidor.
-        // Convertimos bytes -> texto y leemos por líneas con readLine().
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(cliente.getInputStream())
-        );
+    private Socket socket;
+    private String ip;
 
-        // Stream de salida: lo que el servidor envía hacia el cliente.
-        // autoFlush=true para que cada println se envíe al momento.
-        PrintWriter out = new PrintWriter(cliente.getOutputStream(), true);
-        String msg;
+    public ManejadorCliente(Socket socket) {
+        this.socket = socket;
+        this.ip = socket.getInetAddress().getHostAddress();
+    }
 
-        // readLine() devuelve null si la conexión se cierra inesperadamente,
-        // por eso comprobamos != null además del "bye".
-        while ((msg = in.readLine()) != null) {
-            if (msg.toLowerCase().equals("bye")) {
-                out.println("bye");
-                break;
+    @Override
+    public void run() {
+        System.out.println(" --- CONECTADO     " + ip);
+
+        try (
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
+        ) {
+            String msg;
+            while ((msg = in.readLine()) != null) {
+                System.out.println(" --- MSG " + ip + " -> " + msg);
+                if (msg.equalsIgnoreCase("bye")) {
+                    out.println("bye");
+                    break;
+                } else if (msg.equalsIgnoreCase("time")) {
+                    String hora = LocalTime.now()
+                            .format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                    out.println("Hora servidor: " + hora);
+                } else {
+                    out.println("Eco: " + msg);
+                }
             }
 
-            // Respondemos al cliente con un "eco" del mensaje recibido.
-            out.println("Eco: " + msg); // responde
+        } catch (IOException e) {
+            //si el cliente se cierra sin decir bye se ejecuta
+            System.out.println(" --- ERROR " + ip + " -> " + e.getMessage());
+        } finally {
+            // si o si se ejecuta esto
+            System.out.println(" --- DESCONECTADO  " + ip);
+            try { socket.close(); } catch (IOException ignored) {}
         }
-
-        // Cerramos la conexión con ese cliente (su socket).
-        cliente.close();
-
-        // Cerramos el ServerSocket (deja de escuchar en el puerto).
-        // En este ejemplo el servidor solo acepta 1 cliente y se apaga.
-        server.close();
     }
 }
